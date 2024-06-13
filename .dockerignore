@@ -1,0 +1,4 @@
+.git/
+env/
+file_docker
+.gitignore

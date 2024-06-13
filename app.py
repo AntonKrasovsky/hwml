@@ -2,9 +2,9 @@ from flask import Flask, request
 import joblib
 import numpy as np
 
-MODEL_PATH = 'trained_model.pkl'
-SCALER_X_PATH = 'feature_scaler.pkl'
-SCALER_Y_PATH = 'target_scaler.pkl'
+MODEL_PATH = 'ml_models/trained_model.pkl'
+SCALER_X_PATH = 'ml_models/feature_scaler.pkl'
+SCALER_Y_PATH = 'ml_models/target_scaler.pkl'
 
 app = Flask(__name__)
 model = joblib.load(MODEL_PATH)
