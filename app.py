@@ -1,6 +1,15 @@
 from flask import Flask, request
+import joblib
+import numpy as np
+
+MODEL_PATH = 'ml_models/model.pkl'
+SCALER_X_PATH = 'ml_models/scaler_x.pkl'
+SCALER_Y_PATH = 'ml_models/scaler_y.pkl'
 
 app = Flask(__name__)
+model = joblib.load(MODEL_PATH)
+sc_x = joblib.load(SCALER_X_PATH)
+sc_y = joblib.load(SCALER_Y_PATH)
 
 @app.route("/predict_price", methods=['GET'])
 def predict():
@@ -10,9 +19,13 @@ def predict():
     area = args.get('area', default=-1, type=float)
     renovation = args.get('renovation', default=-1, type=int)
 
-    response = "open plan:{}, rooms:{}, area:{}, renovation:{}".format(open_plan, rooms, area, renovation)
+    x = np.array([open_plan, rooms, area, renovation]).reshape(1, -1)
+    x = sc_x.transform(x)
 
-    return response
+    result = model.predict(x)
+    result = sc_y.inverse_transform(result.reshape(1, -1))
+
+    return str(result[0][0])
 
 if __name__ == '__main__':
-    app.run(debug=True, port=6555, host='0.0.0.0')
+    app.run(debug=True, port=7778, host='0.0.0.0')
